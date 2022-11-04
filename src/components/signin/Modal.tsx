@@ -2,16 +2,10 @@
 import { useState } from "react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 import { Dialog } from "@headlessui/react";
-
-import Button from "../Button";
+import SigninForm from "./SigninForm";
 
 function SigninModal() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isLogin, setIsLogin] = useState(true);
-
-  const toggleModal = () => {
-    setIsOpen((v) => !v);
-  };
   return (
     <>
       <button
@@ -22,7 +16,7 @@ function SigninModal() {
           ease-in-out
           hover:font-medium
           active:text-gray-500"
-        onClick={toggleModal}
+        onClick={() => setIsOpen(true)}
       >
         SIGN IN
       </button>
@@ -41,30 +35,7 @@ function SigninModal() {
                 onClick={() => setIsOpen(false)}
               />{" "}
             </Dialog.Title>
-
-            {isLogin && (
-              <>
-                <h2>Sign In</h2>
-                <div className="text-sm font-medium text-gray-500">
-                  Not registered?{" "}
-                  <Button
-                    onClick={() => setIsLogin((v) => !v)}
-                    text="Create an account"
-                    type="light"
-                  />
-                </div>
-              </>
-            )}
-            {!isLogin && (
-              <>
-                <h2>Signup</h2>
-                <Button
-                  onClick={() => setIsLogin((v) => !v)}
-                  text="Back to login"
-                  type="light"
-                />
-              </>
-            )}
+            <SigninForm setIsOpen={setIsOpen} />
           </Dialog.Panel>
         </div>
       </Dialog>
