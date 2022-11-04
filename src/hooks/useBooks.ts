@@ -8,7 +8,8 @@ export function useBooks(query: string, filter: string) {
     ({ pageParam = 0 }) => GetBooks(query, filter, pageParam),
     {
       enabled: query.length >= 2, // If we have searchQuery, then enable the query on render
-      getNextPageParam: (lastPage, allPages) => (allPages[0].totalItems / 20) >= allPages.length
+      staleTime: Infinity,
+      getNextPageParam: (lastPage, allPages) => allPages[0] ? (allPages[0].totalItems / 20) >= allPages.length : false,
     },
   );
 }
@@ -19,6 +20,7 @@ export function useBook(id: string, enabled: boolean) {
     () => GetBook(id),
     {
       enabled,
+      staleTime: Infinity
     },
   );
 }

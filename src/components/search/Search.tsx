@@ -1,27 +1,23 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useContext } from 'react';
-import SearchForm from './SearchForm';
-import SearchResults from './SearchResults';
-import useDebounce from '../hooks/useDebounce';
-import { useBooks } from '../hooks/useBooks';
-import { SearchContext } from '../contexts/SearchContext';
+import React, { useContext } from "react";
+import SearchForm from "./SearchForm";
+import SearchResults from "./SearchResults";
+import useDebounce from "../../hooks/useDebounce";
+import { useBooks } from "../../hooks/useBooks";
+import { SearchContext } from "../../contexts/SearchContext";
 
 function Search() {
-  const {
-    query, filter, setQuery, setFilter,
-  } = useContext(SearchContext);
+  const { query, filter, setQuery, setFilter } = useContext(SearchContext);
 
   const debouncedSearchQuery = useDebounce(query.trim(), 300);
 
-  const {
-    data, isFetching, isLoading, fetchNextPage, hasNextPage,
-  } = useBooks(
+  const { data, isFetching, isLoading, fetchNextPage, hasNextPage } = useBooks(
     debouncedSearchQuery,
-    filter,
+    filter
   );
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    setQuery(value.replace(/^\s+$/gm, '').replace(/\s{2,}/gm, ' '));
+    setQuery(value.replace(/^\s+$/gm, "").replace(/\s{2,}/gm, " "));
   };
 
   const handleRadioChange = (e: React.ChangeEvent<HTMLInputElement>) => {

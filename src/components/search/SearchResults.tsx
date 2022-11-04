@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect, useRef } from "react";
 import type { InfiniteData } from "@tanstack/react-query";
-import BookGrid from "./BookGrid";
-import { SearchContext } from "../contexts/SearchContext";
-import type { BooksRes } from "../services/googlebooks";
+import BookGrid from "../books/BookGrid";
+import { SearchContext } from "../../contexts/SearchContext";
+import type { BooksRes } from "../../services/googlebooks";
 
 function SearchResults({
   isLoading,

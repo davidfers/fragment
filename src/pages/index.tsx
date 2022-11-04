@@ -1,9 +1,8 @@
 import { type NextPage } from "next";
 import Head from "next/head";
-import Search from '../components/Search';
+import Search from "../components/search/Search";
 
 const Home: NextPage = () => {
-
   return (
     <>
       <Head>
@@ -12,9 +11,14 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Search />
-   
     </>
   );
 };
+
+export async function getStaticProps(context) {
+  return {
+    props: {}, // will be passed to the page component as props
+  };
+}
 
 export default Home;

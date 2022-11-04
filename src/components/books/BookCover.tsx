@@ -1,5 +1,5 @@
 import Image from "next/image";
-import type { BookProps } from "../types/book";
+import type { BookProps } from "../../types/book";
 
 function BookCover({ book }: BookProps) {
   return (
