@@ -9,18 +9,15 @@ import { useBook } from "../../hooks/useBooks";
 
 const Book = () => {
   const router = useRouter();
+
   let { id } = router.query;
-  const [bookInShelf, setBookInShelf] = useState(false);
   if (typeof id === "object") {
     id = id[0];
   }
-  let {
-    // eslint-disable-next-line prefer-const
-    isFetching,
-    data,
-    isError,
-    error,
-  } = useBook(id || "", Boolean(id));
+
+  const [bookInShelf, setBookInShelf] = useState(false);
+
+  const { isFetching, data, isError, error } = useBook(id || "", Boolean(id));
 
   useEffect(() => {
     const prevItems = localStorage.getItem("booksInShelf");
@@ -31,6 +28,7 @@ const Book = () => {
       }
     }
   }, [data]);
+
   const handleClick = () => {
     const prevItems = localStorage.getItem("booksInShelf");
     if (prevItems && data) {
