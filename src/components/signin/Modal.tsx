@@ -10,12 +10,13 @@ function SigninModal() {
     <>
       <button
         type="button"
-        className="
+        className={`
+          text-gray-800
           transition
-        duration-150
+          duration-150
           ease-in-out
           hover:font-medium
-          active:text-gray-500"
+          ${isOpen && "font-medium"}`}
         onClick={() => setIsOpen(true)}
       >
         SIGN IN

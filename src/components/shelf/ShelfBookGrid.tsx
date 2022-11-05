@@ -1,10 +1,7 @@
 import BookItem from "./BookItem";
 
 export default function ShelfBookGrid() {
-  const ids =
-    typeof window !== "undefined"
-      ? localStorage.getItem("booksInShelf") || null
-      : null;
+  const ids = localStorage.getItem("booksInShelf") || null;
 
   const parsedIds: string[] = ids ? JSON.parse(ids) : [];
 

@@ -1,5 +1,13 @@
+import dynamic from "next/dynamic";
 import Head from "next/head";
-import ShelfBookGrid from "../../components/shelf/ShelfBookGrid";
+import { Suspense } from "react";
+
+const ShelfBookGrid = dynamic(
+  () => import("../../components/shelf/ShelfBookGrid"),
+  {
+    ssr: false,
+  }
+);
 
 export default function Shelf() {
   return (
@@ -11,7 +19,9 @@ export default function Shelf() {
       </Head>
       <div className="mx-auto mt-16 grid max-w-sm sm:max-w-2xl">
         <h1 className="mb-10 text-center text-2xl">My Shelf</h1>
-        <ShelfBookGrid />
+        <Suspense fallback={`Loading...`}>
+          <ShelfBookGrid />
+        </Suspense>
       </div>
     </>
   );

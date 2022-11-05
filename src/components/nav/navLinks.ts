@@ -1,6 +1,12 @@
-const links = new Map<string, string>();
+const navLinks = [
+  {
+    label: 'search',
+    path: '/'
+  },
+  {
+    label: 'shelf',
+    path: '/shelf'
+  }
+]
 
-links.set('/', 'home');
-links.set('/shelf', 'shelf');
-
-export default links;
+export default navLinks;

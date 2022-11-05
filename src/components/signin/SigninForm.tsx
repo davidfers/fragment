@@ -1,12 +1,13 @@
 /* eslint-disable react/jsx-props-no-spreading */
-import type { Dispatch } from "react";
 import { useState } from "react";
-import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import type { SignInResponse } from "next-auth/react";
+import { BeatLoader } from "react-spinners";
 import { signIn } from "next-auth/react";
+import type { SignInResponse } from "next-auth/react";
+import type { SubmitHandler } from "react-hook-form";
+import type { Dispatch } from "react";
 import Button from "../Button";
 
 const schema = z.object({
@@ -22,7 +23,7 @@ function SigninForm({ setIsOpen }: { setIsOpen: Dispatch<boolean> }) {
     register,
     handleSubmit,
     getValues,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<SchemaType>({
     resolver: zodResolver(schema),
   });
@@ -40,9 +41,10 @@ function SigninForm({ setIsOpen }: { setIsOpen: Dispatch<boolean> }) {
     <div className="space-y-6 px-6 pb-4 sm:pb-6 lg:px-8 xl:pb-8">
       {!signInResponse?.ok && (
         <>
-          <h3 className="mb-10 text-xl font-medium text-gray-900">
-            Sign in to fragment
+          <h3 className=" text-xl font-bold text-gray-900">
+            Sign in to fragment!
           </h3>
+          <span>We will send you an email with a link to access</span>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="flex flex-col pb-1">
               <div className="mb-6">
@@ -51,8 +53,9 @@ function SigninForm({ setIsOpen }: { setIsOpen: Dispatch<boolean> }) {
                   className={`rounded-sm border p-2 ${
                     errors.email && "border-red-500"
                   }`}
-                  placeholder="email"
+                  placeholder="your@email.com"
                   {...register("email")}
+                  disabled={isSubmitting}
                 />
                 {errors.email && (
                   <p className="text-red-500">{errors.email.message}</p>
@@ -63,9 +66,17 @@ function SigninForm({ setIsOpen }: { setIsOpen: Dispatch<boolean> }) {
               <button
                 type="submit"
                 className="my-2 rounded-md bg-fuchsia-700 p-2 text-white hover:bg-fuchsia-800"
+                disabled={isSubmitting}
               >
                 Log in
               </button>
+              {isSubmitting && (
+                <BeatLoader
+                  size={10}
+                  className=" ml-6"
+                  style={{ display: "inline" }}
+                />
+              )}
             </div>
           </form>
         </>
