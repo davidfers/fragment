@@ -14,8 +14,9 @@ function SearchForm({
     <div className="relative mx-auto mb-10 max-w-min">
       <ul className="my-5 flex justify-center gap-8">
         <li>
-          <label htmlFor="intitle">
+          <label htmlFor="intitle" className="cursor-pointer">
             <input
+              className="mr-1 cursor-pointer accent-fuchsia-700"
               type="radio"
               value="intitle"
               id="intitle"
@@ -27,8 +28,9 @@ function SearchForm({
           </label>
         </li>
         <li>
-          <label htmlFor="inauthor">
+          <label htmlFor="inauthor" className="cursor-pointer">
             <input
+              className="mr-1 cursor-pointer accent-fuchsia-700"
               type="radio"
               value="inauthor"
               id="inauthor"
@@ -40,8 +42,9 @@ function SearchForm({
           </label>
         </li>
         <li>
-          <label htmlFor="isbn">
+          <label htmlFor="isbn" className="cursor-pointer">
             <input
+              className="mr-1 cursor-pointer accent-fuchsia-700"
               type="radio"
               value="isbn"
               id="isbn"

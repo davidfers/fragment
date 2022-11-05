@@ -16,10 +16,6 @@ export const authOptions: NextAuthOptions = {
       }
       return session;
     },
-    signIn({ profile }) {
-      console.log('check profile', profile)
-      return true;
-    },
   },
   // Configure one or more authentication providers
   adapter: PrismaAdapter(prisma),

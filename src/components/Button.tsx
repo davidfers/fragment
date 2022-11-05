@@ -12,7 +12,7 @@ export default function Button({ text, type, onClick }: Props) {
       className={
         type === "light"
           ? "text-sm font-medium text-fuchsia-700 hover:underline"
-          : "mt-2 rounded-lg bg-fuchsia-700 p-3 text-white hover:bg-fuchsia-900"
+          : "mt-2 rounded-lg bg-fuchsia-700 py-2 px-5 text-white hover:bg-fuchsia-900"
       }
     >
       {text}

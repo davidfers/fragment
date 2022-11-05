@@ -1,6 +1,5 @@
 /* eslint-disable prefer-const */
 import { useRouter } from "next/router";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { ClipLoader } from "react-spinners";
 import BookDescription from "../../components/books/BookDescription";
@@ -47,29 +46,29 @@ const Book = () => {
 
   return (
     <div className="text-center">
-      <button type="button" onClick={() => router.back()}>
-        GO BACK
-      </button>
+      <Button type="light" onClick={() => router.back()} text="GO BACK" />
       <div className="mt-10  grid justify-center">
-        {isFetching && <ClipLoader />}
-        {data && data.id && (
-          <div className="flex flex-wrap justify-center gap-10">
-            <div className="max-w-xs">
-              <Image
-                src={data.volumeInfo.imageLinks.thumbnail}
-                alt={data.volumeInfo.title}
-                width="200"
-                height="300"
-                className="max-w-full rounded-md"
-              />
-              <Button
-                text={bookInShelf ? "Remove from shelf" : "Add to shelf"}
-                onClick={handleClick}
-              />
-            </div>
-            <BookDescription book={data} />
-          </div>
-        )}
+        <div className="flex flex-wrap justify-center gap-10">
+          {isFetching && <ClipLoader className="mx-40 max-w-sm" />}
+          {data && data.id && (
+            <>
+              <div className="max-w-xs">
+                <img
+                  src={data.volumeInfo.imageLinks.thumbnail}
+                  alt={data.volumeInfo.title}
+                  width="200"
+                  height="300"
+                  className="max-w-full rounded-md"
+                />
+                <Button
+                  text={bookInShelf ? "Remove from shelf" : "Add to shelf"}
+                  onClick={handleClick}
+                />
+              </div>
+              <BookDescription book={data} />
+            </>
+          )}
+        </div>
         {isError && <div>{error?.message}, is the id correct?</div>}
       </div>
     </div>

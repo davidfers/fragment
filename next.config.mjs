@@ -16,12 +16,13 @@ const config = {
   images: {
     remotePatterns: [
       {
-        protocol: 'http',
-        hostname: 'books.google.com',
-        port: '',
-        pathname: '/books/**',
+        protocol: "http",
+        hostname: "books.google.com",
+        port: "",
+        pathname: "/books/**",
       },
     ],
+    minimumCacheTTL: 60,
   },
 };
 export default config;

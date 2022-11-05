@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect, useRef } from "react";
 import type { InfiniteData } from "@tanstack/react-query";
+import { ClipLoader } from "react-spinners";
+
 import BookGrid from "../books/BookGrid";
 import { SearchContext } from "../../contexts/SearchContext";
 import type { BooksRes } from "../../services/googlebooks";
@@ -64,7 +66,7 @@ function SearchResults({
   ).books;
 
   return (
-    <div className="mx-auto mt-16 max-w-sm sm:max-w-2xl">
+    <div className="mx-auto mt-16 max-w-sm text-center sm:max-w-2xl">
       {books && query.length > 1 && (
         <>
           <BookGrid books={books} />
@@ -83,6 +85,9 @@ function SearchResults({
             Can&apos;t find any books by &quot;{query}&quot;...
           </p>
         </div>
+      )}
+      {(isLoading || isFetching) && query.length >= 2 && (
+        <ClipLoader color="#333" className="mx-auto my-16" />
       )}
     </div>
   );

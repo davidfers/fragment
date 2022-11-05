@@ -7,23 +7,23 @@ export default function BookDescription({ book }: { book: Book }) {
     book.volumeInfo;
   return (
     <div className="child:mb-2 max-w-sm text-left">
-      <p>
+      <div>
         <span className="font-medium">Title: </span>
         {title}
-      </p>
-      <p>
+      </div>
+      <div>
         <span className="font-medium">Author</span>: {authors}
-      </p>
-      <p>
+      </div>
+      <div>
         <span className="font-medium">Published Date</span>: {publishedDate}
-      </p>
-      <p>
+      </div>
+      <div>
         <span className="font-medium">Publisher</span>: {publisher}
-      </p>
-      <p>
+      </div>
+      <div>
         <span className="font-medium">Description</span>:{" "}
         {description ? parse(description) : "There's no description"}
-      </p>
+      </div>
     </div>
   );
 }

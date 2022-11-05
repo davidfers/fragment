@@ -1,9 +1,9 @@
-import Image from "next/image";
+/* eslint-disable @next/next/no-img-element */
 import type { BookProps } from "../../types/book";
 
 function BookCover({ book }: BookProps) {
   return (
-    <Image
+    <img
       src={book.volumeInfo.imageLinks.thumbnail}
       alt={book.volumeInfo.title}
       height="207"
