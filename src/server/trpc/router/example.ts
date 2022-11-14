@@ -4,8 +4,9 @@ import { router, publicProcedure } from "../trpc";
 
 export const exampleRouter = router({
   hello: publicProcedure
-    .input(z.object({ text: z.string().nullish() }).nullish())
+    .input(z.object({ text: z.string().nullish() }))
     .query(({ input }) => {
+      console.log(input);
       return {
         greeting: `Hello ${input?.text ?? "world"}`,
       };

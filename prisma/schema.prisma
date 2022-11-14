@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
   // Further reading:
   // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
@@ -55,6 +55,7 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
+  shelfs        Shelf[]
 }
 
 model VerificationToken {
@@ -64,3 +65,14 @@ model VerificationToken {
 
   @@unique([identifier, token])
 }
+
+
+model Shelf {
+  id      String @id @default(cuid())
+  name    String
+  books   String[] //Comma separated list of google book ids
+  userId  String
+  user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@unique([name, userId])
+}
+

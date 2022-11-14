@@ -1,19 +1,20 @@
 interface Props {
   text: string;
-  type?: "light";
+  type?: "light" | "solid";
   onClick: React.MouseEventHandler<HTMLButtonElement>;
+  className?: string;
 }
 
-export default function Button({ text, type, onClick }: Props) {
+export default function Button({ text, type, onClick, className }: Props) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className={
+      className={`${className} ${
         type === "light"
           ? "text-sm font-medium text-fuchsia-700 hover:underline"
-          : "mt-2 rounded-lg bg-fuchsia-700 py-2 px-5 text-white hover:bg-fuchsia-900"
-      }
+          : "mx-auto mt-2 block rounded-lg bg-fuchsia-700 py-2 px-5 text-white hover:bg-fuchsia-900"
+      }`}
     >
       {text}
     </button>
