@@ -1,12 +1,11 @@
 import type { Session } from "next-auth";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { trpc } from "../../utils/trpc";
 import Button from "../Button";
 import SelectShelf from "./SelectShelf";
 import BarLoader from "react-spinners/BarLoader";
 
 const SaveToShelfDB = ({ bookId }: { bookId: string; session: Session }) => {
-  const [inShelf, setInShelf] = useState(false);
   const [openAddShelf, setOpenAddShelf] = useState(false);
 
   const {
@@ -18,13 +17,9 @@ const SaveToShelfDB = ({ bookId }: { bookId: string; session: Session }) => {
     refetchOnWindowFocus: false,
   });
 
-  useEffect(() => {
-    setInShelf(Boolean(bookShelves?.length));
-  }, [bookShelves]);
-
   return (
     <>
-      {inShelf && bookShelves && (
+      {bookShelves && (
         <ul className="mt-1 flex flex-wrap gap-1" style={{ maxWidth: 200 }}>
           {bookShelves.map((shelf) => (
             <li

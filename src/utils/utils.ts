@@ -55,3 +55,8 @@ export const throttle = (func: any, delay = 500) => {
     }
   };
 };
+
+export const bookCoverAttr = {
+  width: 128,
+  height: 207
+}

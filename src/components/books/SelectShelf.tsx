@@ -6,7 +6,6 @@ import type { Dispatch, SetStateAction } from "react";
 import { Fragment, useState } from "react";
 import Button from "../Button";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const SelectShelf = ({
   shelfList,
   refetch,
@@ -18,6 +17,8 @@ const SelectShelf = ({
   bookId: string;
   closeOnSave: Dispatch<SetStateAction<boolean>>;
 }) => {
+  const [selectedShelves, setSelectedShelves] = useState(shelfList);
+
   const { data: shelfListAll, isSuccess } = trpc.shelf.getShelves.useQuery(
     undefined,
     {
@@ -59,10 +60,6 @@ const SelectShelf = ({
       });
     closeOnSave(false);
   };
-
-  const [selectedShelves, setSelectedShelves] = useState(shelfList);
-  console.log("check shelfList", shelfList);
-  console.log("check shelfList ALL", shelfListAll);
 
   return shelfListAll && isSuccess ? (
     <>

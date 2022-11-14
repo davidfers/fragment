@@ -41,6 +41,16 @@ export const shelfRouter = router({
         }
       });
     }),
+  getBooksFromShelf: protectedProcedure
+    .input(z.union([z.string(), z.undefined()]))
+    .query(async ({ ctx, input }) => {
+      if (typeof input === 'undefined') return;
+      return ctx.prisma.shelf.findFirst({
+        where: {
+          id: input
+        }
+      }).then((res) => res?.books)
+    }),
   addBook: protectedProcedure
     .input(z.object({
       bookId: z.string(),
