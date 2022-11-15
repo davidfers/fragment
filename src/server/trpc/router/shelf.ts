@@ -17,6 +17,22 @@ export const shelfRouter = router({
         throw e;
       }
     }),
+  delete: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ ctx, input }) => {
+      try {
+        return await ctx.prisma.shelf.delete({
+          where: {
+            name_userId: {
+              name: input,
+              userId: ctx.session.user.id,
+            },
+          },
+        })
+      } catch (e) {
+        throw e;
+      }
+    }),
   getShelves: protectedProcedure
     .query(async ({ ctx }) => {
       try {
@@ -44,7 +60,7 @@ export const shelfRouter = router({
   getBooksFromShelf: protectedProcedure
     .input(z.union([z.string(), z.undefined()]))
     .query(async ({ ctx, input }) => {
-      if (typeof input === 'undefined') return;
+      if (typeof input === 'undefined') return false;
       return ctx.prisma.shelf.findFirst({
         where: {
           id: input
