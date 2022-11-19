@@ -6,7 +6,7 @@ const ShelfBookGridDB = () => {
   return data ? (
     <ShelfTabs shelves={data} refetchShelves={refetchShelves} />
   ) : (
-    <div>No shelves</div>
+    <></>
   );
 };
 

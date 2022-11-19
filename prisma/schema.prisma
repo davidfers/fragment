@@ -56,6 +56,7 @@ model User {
   accounts      Account[]
   sessions      Session[]
   shelfs        Shelf[]
+  bookshelf     BookShelf[]
 }
 
 model VerificationToken {
@@ -68,11 +69,19 @@ model VerificationToken {
 
 
 model Shelf {
-  id      String @id @default(cuid())
-  name    String
-  books   String[] //Comma separated list of google book ids
-  userId  String
-  user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String @id @default(cuid())
+  name      String
+  userId    String
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  bookshelf BookShelf[]
   @@unique([name, userId])
 }
 
+model BookShelf {
+  userId  String
+  shelfId String
+  bookId  String
+  user    User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shelf   Shelf @relation(fields: [shelfId], references: [id], onDelete: Cascade)
+  @@unique([shelfId, bookId])
+}

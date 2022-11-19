@@ -1,10 +1,11 @@
 import { Listbox, Transition } from "@headlessui/react";
 import { ChevronUpDownIcon, CheckIcon } from "@heroicons/react/24/outline";
-import type { Shelf } from "@prisma/client";
 import { trpc } from "../../utils/trpc";
 import type { Dispatch, SetStateAction } from "react";
 import { Fragment, useState } from "react";
 import Button from "../Button";
+import type { ShelfList } from "../../types/shelf";
+import { arraysAreEqual } from "../../utils/utils";
 
 const SelectShelf = ({
   shelfList,
@@ -12,7 +13,7 @@ const SelectShelf = ({
   bookId,
   closeOnSave,
 }: {
-  shelfList: Shelf[];
+  shelfList: ShelfList[];
   refetch?: any;
   bookId: string;
   closeOnSave: Dispatch<SetStateAction<boolean>>;
@@ -22,43 +23,29 @@ const SelectShelf = ({
   const { data: shelfListAll, isSuccess } = trpc.shelf.getShelves.useQuery(
     undefined,
     {
+      refetchOnMount: "always",
       onSuccess: (data) =>
         setSelectedShelves(
           data.filter((el) => shelfList.find((subEl) => subEl.id === el.id))
         ),
     }
   );
-  const { mutate: addToShelf } = trpc.shelf.addBook.useMutation({
-    onSuccess: () => {
-      if (refetch) refetch();
-    },
-  });
 
-  const { mutate: removeFromShelf } = trpc.shelf.removeBook.useMutation({
-    onSuccess: () => {
-      if (refetch) refetch();
-    },
-  });
+  const { mutate: updateBookShelves, isLoading } =
+    trpc.shelf.updateBookShelves.useMutation({
+      onSuccess: () => {
+        if (refetch) refetch();
+        closeOnSave(false);
+      },
+    });
 
-  const handleSave = () => {
-    const shelvesToSave = selectedShelves
-      .filter((el) => !shelfList.find((subEl) => subEl.id === el.id))
-      .map((el) => el.id);
-    const shelvesToRemove = shelfList
-      .filter((el) => !selectedShelves.find((subEl) => subEl.id === el.id))
-      .map((el) => el.id);
-
-    shelvesToSave.length > 0 &&
-      addToShelf({
+  const handleSave = async () => {
+    if (!arraysAreEqual(shelfList, selectedShelves)) {
+      updateBookShelves({
         bookId: bookId,
-        shelfId: shelvesToSave,
+        shelvesId: selectedShelves.map((shelf) => shelf.id),
       });
-    shelvesToRemove.length > 0 &&
-      removeFromShelf({
-        bookId: bookId,
-        shelfId: shelvesToRemove,
-      });
-    closeOnSave(false);
+    }
   };
 
   return shelfListAll && isSuccess ? (
@@ -137,7 +124,7 @@ const SelectShelf = ({
           </Listbox.Options>
         </Transition>
       </Listbox>
-      <Button text="Save" onClick={() => handleSave()} />
+      <Button text="Save" onClick={() => handleSave()} disabled={isLoading} />
     </>
   ) : (
     <div>Fetching shelves...</div>

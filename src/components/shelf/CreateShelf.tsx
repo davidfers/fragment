@@ -47,10 +47,10 @@ const CreateShelf = ({ refetchShelves }: { refetchShelves: any }) => {
         disabled={isLoading}
         placeholder="Press enter to save"
         onChange={(e) => setInput(e.target.value)}
-        className={`mb-3 transform  border-2	border-fuchsia-700 transition-all duration-500 focus:outline-none ${
+        className={`mb-3 transform 	border-fuchsia-700 transition-all duration-500 focus:outline-none ${
           isActive
-            ? "border-opacity-1 h-10 w-60 p-1"
-            : " h-0 w-0 border-opacity-0"
+            ? "border-opacity-1 h-10 w-60 border-2 p-1"
+            : " h-0 w-0 border-0 border-opacity-0"
         }`}
         onKeyDown={(e) => {
           e.key === "Enter" && handleSubmit();
