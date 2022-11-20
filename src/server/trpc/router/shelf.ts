@@ -1,5 +1,5 @@
-import { z } from "zod";
 
+import { z } from "zod";
 import { router, protectedProcedure } from "../trpc";
 
 export const shelfRouter = router({
@@ -17,12 +17,31 @@ export const shelfRouter = router({
         throw e;
       }
     }),
+  delete: protectedProcedure
+    .input(z.string())
+    .mutation(async ({ ctx, input }) => {
+      try {
+        return await ctx.prisma.shelf.delete({
+          where: {
+            name_userId: {
+              name: input,
+              userId: ctx.session.user.id,
+            },
+          },
+        })
+      } catch (e) {
+        throw e;
+      }
+    }),
   getShelves: protectedProcedure
     .query(async ({ ctx }) => {
       try {
         return await ctx.prisma.shelf.findMany({
           where: {
             userId: ctx.session.user.id,
+          },
+          orderBy: {
+            name: 'asc',
           }
         })
       } catch (e) {
@@ -31,123 +50,78 @@ export const shelfRouter = router({
     }),
   getBookShelves: protectedProcedure
     .input(z.string())
-    .query(({ ctx, input }) => {
-      return ctx.prisma.shelf.findMany({
-        where: {
-          userId: ctx.session.user.id,
-          books: {
-            has: input
+    .query(async ({ ctx, input }) => {
+      try {
+        return await ctx.prisma.bookShelf.findMany({
+          where: {
+            bookId: input,
+            userId: ctx.session.user.id,
+          },
+          select: {
+            shelf: true,
           }
-        }
-      });
+        }).then(res => res.map(shelf => shelf.shelf));
+      } catch (e) {
+        throw e;
+      }
     }),
   getBooksFromShelf: protectedProcedure
     .input(z.union([z.string(), z.undefined()]))
     .query(async ({ ctx, input }) => {
-      if (typeof input === 'undefined') return;
-      return ctx.prisma.shelf.findFirst({
-        where: {
-          id: input
-        }
-      }).then((res) => res?.books)
+      if (typeof input === 'undefined') return []
+      try {
+        return await ctx.prisma.bookShelf.findMany({
+          where: {
+            shelfId: input,
+            userId: ctx.session.user.id,
+          },
+          select: {
+            bookId: true,
+          }
+        }).then(res => res.map(book => book.bookId));
+      } catch (e) {
+        throw e;
+      }
     }),
-  addBook: protectedProcedure
+  updateBookShelves: protectedProcedure
     .input(z.object({
       bookId: z.string(),
-      shelfId: z.union([z.string(), z.array(z.string())]),
+      shelvesId: z.array(z.string()),
     }))
     .mutation(async ({ ctx, input }) => {
-      try {
-        if (typeof input.shelfId === 'object') {
-          input.shelfId.forEach(async el => {
-            await ctx.prisma.shelf.update({
-              data: {
-                books: {
-                  push: input.bookId
-                }
-              },
-              where: {
-                id: el
-              }
-            }).then((res) => res.id)
-          })
-          return 'ok';
+      const formerShelvesId = await ctx.prisma.bookShelf.findMany({
+        where: {
+          bookId: input.bookId,
+          userId: ctx.session.user.id,
         }
-        if (typeof input.shelfId === 'string') {
-          return await ctx.prisma.shelf.update({
-            data: {
-              books: {
-                push: input.bookId
-              }
-            },
+      }).then(res => res.map(el => el.shelfId));
+
+      const shelvesToAdd = input.shelvesId.filter(shelfA => !formerShelvesId.includes(shelfA));
+      const shelvesToRemove = formerShelvesId.filter(shelfA => !input.shelvesId.includes(shelfA));
+
+      try {
+        if (shelvesToAdd.length > 0) {
+          const data = shelvesToAdd.map(shelfId => ({
+            shelfId: shelfId,
+            userId: ctx.session.user.id,
+            bookId: input.bookId,
+          }));
+          await ctx.prisma.bookShelf.createMany({
+            data: data,
+          });
+        }
+        if (shelvesToRemove.length > 0) {
+          await ctx.prisma.bookShelf.deleteMany({
             where: {
-              id: input.shelfId
+              bookId: input.bookId,
+              shelfId: {
+                in: shelvesToRemove
+              }
             }
-          }).then((res) => res.id)
+          })
         }
       } catch (e) {
-        return new Error('Something went wrong')
+        throw e;
       }
-
-    }),
-  removeBook: protectedProcedure
-    .input(z.object({
-      bookId: z.string(),
-      shelfId: z.union([z.string(), z.array(z.string())]),
-    }))
-    .mutation(async ({ ctx, input }) => {
-      if (typeof input.shelfId === 'object') {
-        for (let i = 0; i < input.shelfId.length; i++) {
-          const bookList = await ctx.prisma.shelf.findFirst({
-            where: {
-              id: input.shelfId[i],
-              userId: ctx.session.user.id
-            }
-          }).then(shelf => shelf?.books);
-          if (typeof bookList === 'undefined') break;
-          const filteredList = bookList.filter((book) => book !== input.bookId)
-          try {
-            await ctx.prisma.shelf.update({
-              data: {
-                books: {
-                  set: filteredList
-                }
-              },
-              where: {
-                id: input.shelfId[i]
-              },
-            })
-          } catch (e) {
-            throw e
-          }
-
-        }
-        return 'ok';
-      }
-      if (typeof input.shelfId === 'string') {
-        const bookList = await ctx.prisma.shelf.findFirst({
-          where: {
-            id: input.shelfId,
-            userId: ctx.session.user.id,
-          }
-        }).then((shelf) => shelf?.books);
-        if (typeof bookList === 'undefined') return;
-        const filteredList = bookList.filter((book) => book !== input.bookId)
-        try {
-          return await ctx.prisma.shelf.update({
-            data: {
-              books: {
-                set: filteredList
-              }
-            },
-            where: {
-              id: input.shelfId
-            },
-          })
-        } catch (e) {
-          throw e
-        }
-      }
-
     }),
 });

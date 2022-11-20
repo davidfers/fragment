@@ -11,10 +11,11 @@ const SaveToShelfDB = ({ bookId }: { bookId: string; session: Session }) => {
   const {
     data: bookShelves,
     refetch: refetchBookShelves,
-    isFetching,
+    isLoading,
     isSuccess,
   } = trpc.shelf.getBookShelves.useQuery(bookId, {
-    refetchOnWindowFocus: false,
+    staleTime: Infinity,
+    refetchOnMount: "always",
   });
 
   return (
@@ -23,7 +24,7 @@ const SaveToShelfDB = ({ bookId }: { bookId: string; session: Session }) => {
         <ul className="mt-1 flex flex-wrap gap-1" style={{ maxWidth: 200 }}>
           {bookShelves.map((shelf) => (
             <li
-              key={shelf.id}
+              key={shelf.name}
               className="inline rounded-md bg-blue-300 py-1.5 px-3"
             >
               {shelf.name}
@@ -31,6 +32,7 @@ const SaveToShelfDB = ({ bookId }: { bookId: string; session: Session }) => {
           ))}
         </ul>
       )}
+      {isLoading && <BarLoader className="mx-auto mt-3" />}
 
       <Button
         className="mx-auto block"
@@ -46,7 +48,6 @@ const SaveToShelfDB = ({ bookId }: { bookId: string; session: Session }) => {
           closeOnSave={setOpenAddShelf}
         />
       )}
-      {isFetching && <BarLoader className="mx-auto mt-3" />}
     </>
   );
 };

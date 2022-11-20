@@ -3,11 +3,22 @@ import type { Shelf } from "@prisma/client";
 import useEmblaCarousel from "embla-carousel-react";
 import { trpc } from "../../utils/trpc";
 import BookItem from "./BookItem";
+import CreateShelf from "./CreateShelf";
+import DeleteShelf from "./DeleteShelf";
 
-export const ShelfTabs = ({ shelves }: { shelves: Shelf[] }) => {
+export const ShelfTabs = ({
+  shelves,
+  refetchShelves,
+}: {
+  shelves: Shelf[];
+  refetchShelves: any;
+}) => {
   const [activeIndex, setActiveIndex] = useState(0);
   const { data: booksFromShelf } = trpc.shelf.getBooksFromShelf.useQuery(
-    shelves[activeIndex]?.id
+    shelves[activeIndex]?.id,
+    {
+      refetchOnMount: "always",
+    }
   );
   const [emblaRef, embla] = useEmblaCarousel({
     align: "start",
@@ -23,6 +34,15 @@ export const ShelfTabs = ({ shelves }: { shelves: Shelf[] }) => {
   );
   return (
     <>
+      <div className="mb-5 flex items-center justify-center gap-10">
+        <CreateShelf refetchShelves={refetchShelves} />
+        {shelves.length > 0 && (
+          <DeleteShelf
+            shelf={shelves[activeIndex]?.name}
+            refetchShelves={refetchShelves}
+          />
+        )}
+      </div>
       <div className="embla relative overflow-hidden px-3" ref={emblaRef}>
         <div className="embla__container  flex items-center gap-2 px-3 text-center">
           {shelves.map((shelf, index) => (
