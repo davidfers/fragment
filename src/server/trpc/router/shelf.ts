@@ -42,7 +42,7 @@ export const shelfRouter = router({
           },
           orderBy: {
             name: 'asc',
-          }
+          },
         })
       } catch (e) {
         throw e;
